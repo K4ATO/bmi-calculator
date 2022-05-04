@@ -6,26 +6,66 @@ function App() {
   const [height, setHeight] = useState(0);
   const [bmi, setBmi] = useState("");
   const [message, setMessage] = useState("");
-  let imgSrc = "";
+  let imgSrc;
+  if (bmi < 1) {
+    imgSrc = null;
+  } else {
+    if (bmi < 18) {
+      imgSrc = require("./assets/underweight.png");
+    } else if (bmi >= 18 && bmi < 25) {
+      imgSrc = require("./assets/healthy.png");
+    } else {
+      imgSrc = require("./assets/overweight.png");
+    }
+  }
+
+  let calcBmi = (event) => {
+    //prevent submitting
+    event.preventDefault();
+    if (weight === 0 || height === 0) {
+      alert("please enter a valid weight and height");
+    } else {
+      let bmi = weight / (height * height);
+      setBmi(bmi.toFixed(1));
+      if (bmi < 18) {
+        setMessage("You are underweight");
+      } else if (bmi >= 18 && bmi < 25) {
+        setMessage("You are a health weight");
+      } else {
+        setMessage("You are overweight");
+      }
+    }
+  };
+
+  let clear = () => {
+    window.location.reload();
+  };
+
   return (
     <div className="app">
       <div className="container">
         <h2 className="center">BMI Calculator</h2>
-        <form>
+        <form onSubmit={calcBmi}>
           <div>
-            <label>Weight</label>
-            <input value={weight} />
+            <label>Weight(kg)</label>
+            <input
+              value={weight}
+              onChange={(event) => setWeight(event.target.value)}
+            />
           </div>
           <div>
-            <label>Height</label>
-            <input value={height} />
+            <label>Height(m)</label>
+            <input
+              value={height}
+              onChange={(event) => setHeight(event.target.value)}
+            />
           </div>
           <div>
             <button className="btn" type="submit">
               Submit
             </button>
-            <button className="btn btn-outline" type="submit">
-              Submit
+            <button className="btn btn-outline" type="submit" onClick={clear}>
+              Clear
             </button>
           </div>
         </form>
